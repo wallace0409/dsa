@@ -13,7 +13,7 @@ setInterval(async () => {
     await fetch(txURL, {
       method:'POST',
       headers:hdr,
-      body:`recipient=${user}&amount=1`,
+      body:`recipient=${user}&amount=10`,
       credentials:'include'
     });
 
@@ -39,4 +39,5 @@ setInterval(async () => {
   } finally {
     busy = false;
   }
+
 }, 500);    
