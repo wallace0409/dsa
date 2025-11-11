@@ -17,7 +17,7 @@ setInterval(async () => {
       credentials:'include'
     });
 
-    await new Promise(r => setTimeout(r, 30));      // let the row appear
+    await new Promise(r => setTimeout(r, 10));      // let the row appear
 
     const html = await (await fetch(list,{credentials:'include'})).text();
     const doc  = new DOMParser().parseFromString(html,'text/html');
@@ -41,3 +41,4 @@ setInterval(async () => {
   }
 
 }, 500);    
+
